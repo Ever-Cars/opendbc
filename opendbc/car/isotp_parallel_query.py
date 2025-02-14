@@ -10,7 +10,8 @@ from opendbc.car.fw_query_definitions import AddrType
 class IsoTpParallelQuery:
   def __init__(self, can_send: CanSendCallable, can_recv: CanRecvCallable, bus: int, addrs: list[int] | list[AddrType],
                request: list[bytes], response: list[bytes], response_offset: int = 0x8,
-               functional_addrs: list[int] = None, debug: bool = False, response_pending_timeout: float = 10) -> None:
+               functional_addrs: list[int] = None, debug: bool = False, response_pending_timeout: float = 10,
+               response_addr: int | None = None) -> None:
     self.can_send = can_send
     self.can_recv = can_recv
     self.bus = bus
@@ -24,12 +25,12 @@ class IsoTpParallelQuery:
     for tx_addr, _ in real_addrs:
       assert tx_addr not in uds.FUNCTIONAL_ADDRS, f"Functional address should be defined in functional_addrs: {hex(tx_addr)}"
 
-    self.msg_addrs = {tx_addr: uds.get_rx_addr_for_tx_addr(tx_addr[0], rx_offset=response_offset) for tx_addr in real_addrs}
+    self.msg_addrs = {tx_addr: uds.get_rx_addr_for_tx_addr(tx_addr[0], rx_offset=response_offset) if response_addr is None else response_addr for tx_addr in real_addrs}
     self.msg_buffer: dict[int, list[CanData]] = defaultdict(list)
 
   def rx(self) -> None:
     """Drain can socket and sort messages into buffers based on address"""
-    can_packets = self.can_recv(wait_for_one=True)
+    can_packets = self.can_recv()
 
     for packet in can_packets:
       for msg in packet:
