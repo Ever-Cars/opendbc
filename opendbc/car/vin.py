@@ -16,10 +16,10 @@ def get_vin(can_recv, can_send, buses, timeout=0.1, retry=2, debug=False):
   for i in range(retry):
     for bus in buses:
       for request, response, valid_buses, vin_addrs, response_addr, functional_addrs, rx_offset in (
-        (StdQueries.UDS_VIN_REQUEST, StdQueries.UDS_VIN_RESPONSE, (0, 1), STANDARD_VIN_ADDRS, None, uds.FUNCTIONAL_ADDRS, 0x8),
-        (StdQueries.OBD_VIN_REQUEST, StdQueries.OBD_VIN_RESPONSE, (0, 1), STANDARD_VIN_ADDRS, None, uds.FUNCTIONAL_ADDRS, 0x8),
-        (StdQueries.GM_VIN_REQUEST, StdQueries.GM_VIN_RESPONSE, (0,), [0x24b], None, None, 0x400),  # Bolt fwdCamera
-        (StdQueries.KWP_VIN_REQUEST, StdQueries.KWP_VIN_RESPONSE, (0,), [0x797], None, None, 0x3),  # Nissan Leaf VCM
+        (StdQueries.UDS_VIN_REQUEST, StdQueries.UDS_VIN_RESPONSE, (0, 1), STANDARD_VIN_ADDRS, None, uds.FUNCTIONAL_ADDRS, None, 0x8),
+        (StdQueries.OBD_VIN_REQUEST, StdQueries.OBD_VIN_RESPONSE, (0, 1), STANDARD_VIN_ADDRS, None, uds.FUNCTIONAL_ADDRS, None, 0x8),
+        (StdQueries.GM_VIN_REQUEST, StdQueries.GM_VIN_RESPONSE, (0,), [0x24b], None, None, None, 0x400),  # Bolt fwdCamera
+        (StdQueries.KWP_VIN_REQUEST, StdQueries.KWP_VIN_RESPONSE, (0,), [0x797], None, None, None, 0x3),  # Nissan Leaf VCM
         (StdQueries.UDS_VIN_REQUEST, StdQueries.UDS_VIN_RESPONSE, (0,), [0x74f], None, None, 0x6a),  # Volkswagen fwdCamera
       ):
         if bus not in valid_buses:
